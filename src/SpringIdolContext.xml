@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+<context:annotation-config></context:annotation-config>
+<util:map id = "instruments">
+	<entry key = "Saxo" value-ref = "Saxo"></entry>
+	<entry key = "Guitar" value-ref = "Guitar"></entry>
+</util:map>
+<bean id = "duke" class = "com.SpringIdol.Performers.Juggler">
+<!-- declaration of list of insturmrnts -->
+<!-- Part 1 -->
+<constructor-arg name="beanBaggs" value="15"></constructor-arg>
+</bean>
+<!-- Part 2 -->
+<bean id = "poeticDuke" class = "com.SpringIdol.Performers.PoeticJuggler">
+<constructor-arg name="beanBaggs" value="15"></constructor-arg>
+<constructor-arg name = "poem" ref = "sonnet29"></constructor-arg>
+</bean>
+<bean id = "sonnet29" class = "com.SpringIdol.Performers.Sonnet29">
+</bean>
+<!-- Singletons and crating a bean using a factory-method defined in the bean class -->
+<bean id = "stage" class = "com.SpringIdol.entities.Stage" factory-method="getInstance" init-method="turnOnLights" destroy-method="turnOffLights"></bean>
+<!-- scopes of beans -->
+		<!-- prototype scope : appropriate for domain classes definition , the default scope is singleton (one instance per application context) , prototype : that
+		means that this bean is a prototype (model) for instanciating other beans that are created under the bean definition-->
+<bean id = "ASonnet29Poem" class = "com.SpringIdol.Performers.Sonnet29" scope = "prototype">
+</bean>
+<!--  John is an other PoecticJuggler , but he has his own poem and he wants anybody to recite it  -->
+<bean id = "John" class = "com.SpringIdol.Performers.PoeticJuggler">
+<property name="beanBaggs" value="14" ></property>
+<property name="poem">
+<!-- inner bean -->
+<bean class = "com.SpringIdol.Performers.Sonnet29"></bean>
+</property>
+</bean>
+<!-- Intrumentalist example -->
+<bean id = "Jack" class = "com.SpringIdol.Performers.Instrumentalist">
+<property name = "type_singer" value="#{T(com.SpringIdol.Performers.Type_Singer).COUNTRY}">
+</property>
+<property name="instruments">
+	<map>
+		<entry key = "Saxophone" value-ref="Saxo"></entry>
+		<entry key = "Guitar" value-ref="Guitar"></entry>
+	</map>
+</property>
+<property name = "main_instrument" value="#{instruments['Guitar']}"></property>
+</bean>
+<bean id = "Kevin" class = "com.SpringIdol.Performers.Instrumentalist" >
+<property name = "type_singer" value="#{T(com.SpringIdol.Performers.Type_Singer).CLASSICAL}">
+</property>
+<property name="instruments">
+	<map>
+		<entry key = "Saxophone" value-ref="Saxo"></entry>
+		<entry key = "Guitar" value-ref="Guitar"></entry>
+	</map>
+</property>
+</bean>
+<bean id = "Saxo" class = "com.SpringIdol.Performers.Saxophone" >
+</bean>
+<bean id = "Guitar" class = "com.SpringIdol.Performers.Guitar">
+</bean>
+<bean id = "main_instrument" class = "com.SpringIdol.Performers.Guitar" >
+</bean>
+<bean id = "audience" class = "com.SpringIdol.entities.Audience"></bean>
+</beans>
